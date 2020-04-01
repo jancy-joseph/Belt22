@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>thoughts</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- {% load static %}
+    <script src="{% static 'js/script.js' %}"></script> -->
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 text-left">
+                <h6>Welcome {{request.session.username}}</h6>
+            </div>
+            <div class="col-sm-4 text-right ">
+                <form action="/logout" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="myform" value="1">
+                <div class="form-group row">
+                    <div class="col-sm-3"></div>
+                    <input type="submit" value="Logout" class="col-sm-4 btn btn-primary">
+                </div>
+            </form>
+            </div>
+        </div>
+        <div class="row">
+                <div class="col-sm-12">
+                    <form action="/addpost" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="myform" value="1">
+                        {% if messages %}
+                        {% for message in messages %}
+                        {% if message.extra_tags == "Postmessage" %}
+                        <span class="text-danger">{{message}}</span>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <div class="form-group row d-block">
+                            <div class="col-sm-12 d-inline-block">
+                                <textarea class="col-sm-12 form-control h-100" type="text" name="Postmessage"></textarea>
+                            </div>
+                            <div class="col-sm-4 offset-sm-8 align-right d-inline-block">
+                                <input type="submit" value="Add Thought!" class="col-sm-4 btn btn-primary ">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <hr class="w-100 border-primary-10">
+                <div class="col-sm-9">
+                    {% for post in posts.all%}
+                        <div class="form-group row">
+                            <div class="col-sm-3 text-left">
+                                <h6>{{post.user.first_name}} says:</h6>
+                            </div>
+                            <div class="col-sm-6 text-center">
+                                <h6>{{post.message}}</h6>
+                            </div>  
+                            {% if request.session.user_id == post.user.id %}
+                            <div class="col-sm-3 text-right">
+                                <a href="/{{post.id}}/deletepost">Delete</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group row">
+                            <div class="col text-left">
+                                <a href="/thoughts/{{post.id}}">Details</a>
+                            </div>
+                            <div class="col text-right">
+                                <h6>{{post.likecount}} like this</h6>
+                            </div>
+                        </div> 
+                    {% endfor %}
+                </div>
+            </div>
+    </div> 
+</body>
+</html>
